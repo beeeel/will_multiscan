@@ -9,6 +9,13 @@ for k=1:length(data.shifted);
     figure_handles(k) = figure('position',[25+(k-1)*900 25 900 800]);
 end
 
+% Determine which axis we're plotting
+ax_scan = axis_info.axis_pts > 1;
+if sum(ax_scan) > 2
+    error('Data appears to be 3D scan, this plotting callback has been modified to show 2D data with a count action')
+end
+ax1 = sprintf('axis%i',find(ax_scan .* (1:length(ax_scan)),1,'first'));
+ax2 = sprintf('axis%i',find(ax_scan .* (1:length(ax_scan)),1,'last'));
 
 for k=1:length(data.shifted);
     plotting_vars = {data,axis_info,filename,k,exp_params,plot_params,figure_handles};
@@ -44,16 +51,16 @@ for k=1:length(data.shifted);
     
     figure(figure_handles(k));
     if data.dc_count>0
-        subplot(3,3,1);imagesc(axis_info.axis3.um,axis_info.axis2.um,data.dc{k});%axis image;
+        subplot(3,3,1);imagesc(axis_info.(ax2).um,axis_info.(ax1).um,data.dc{k});%axis image;
         a = get(gca,'position');c =colorbar('location','westoutside');set(gca,'position',a);title(c,'V')
         set(gca,'interruptible','off','BusyAction','cancel','ButtonDownFcn', {@func_plot_count_callback_multiscan,plotting_vars});                 %assign call back function when mouse clicked in figur
         set(get(gca,'Children'),'interruptible','off','BusyAction','cancel','ButtonDownFcn', {@func_plot_count_callback_multiscan,plotting_vars}); %apply to data in the figure as well
         
         title(sprintf('DC%d',k));
-        hold on;plot(axis_info.axis3.um(y_sel),axis_info.axis2.um(x_sel),'wx','markersize',8,'linewidth',2);hold off
+        hold on;plot(axis_info.(ax2).um(y_sel),axis_info.(ax1).um(x_sel),'wx','markersize',8,'linewidth',2);hold off
     end
     
-    subplot(3,3,4);imagesc(axis_info.axis3.um,axis_info.axis2.um,data.f_amp{k}.*a_mask);%axis image;
+    subplot(3,3,4);imagesc(axis_info.(ax2).um,axis_info.(ax1).um,data.f_amp{k}.*a_mask);%axis image;
     a = get(gca,'position');c=colorbar('location','westoutside');set(gca,'position',a);
     set(gca,'interruptible','off','BusyAction','cancel','ButtonDownFcn', {@func_plot_count_callback_multiscan,plotting_vars});                 %assign call back function when mouse clicked in figur
     set(get(gca,'Children'),'interruptible','off','BusyAction','cancel','ButtonDownFcn', {@func_plot_count_callback_multiscan,plotting_vars}); %apply to data in the figure as well
@@ -63,19 +70,19 @@ for k=1:length(data.shifted);
     else
         title('AC amp');title(c,'V');
     end
-    hold on;plot(axis_info.axis3.um(y_sel),axis_info.axis2.um(x_sel),'wx','markersize',8,'linewidth',2);hold off
+    hold on;plot(axis_info.(ax2).um(y_sel),axis_info.(ax1).um(x_sel),'wx','markersize',8,'linewidth',2);hold off
     
     
-    subplot(3,3,7);imagesc(axis_info.axis3.um,axis_info.axis2.um,data.freq{k}.*f_mask,[exp_params.f_min exp_params.f_max]);%axis image;
+    subplot(3,3,7);imagesc(axis_info.(ax2).um,axis_info.(ax1).um,data.freq{k}.*f_mask,[exp_params.f_min exp_params.f_max]);%axis image;
     a = get(gca,'position');c=colorbar('location','westoutside');set(gca,'position',a);
     set(gca,'interruptible','off','BusyAction','cancel','ButtonDownFcn', {@func_plot_count_callback_multiscan,plotting_vars});                 %assign call back function when mouse clicked in figur
     set(get(gca,'Children'),'interruptible','off','BusyAction','cancel','ButtonDownFcn', {@func_plot_count_callback_multiscan,plotting_vars}); %apply to data in the figure as well
     title('Frequency');title(c,'GHz')
-    hold on;plot(axis_info.axis3.um(y_sel),axis_info.axis2.um(x_sel),'wx','markersize',8,'linewidth',2);hold off
+    hold on;plot(axis_info.(ax2).um(y_sel),axis_info.(ax1).um(x_sel),'wx','markersize',8,'linewidth',2);hold off
     clear c;
     
     subplot(3,3,2:3);plot(1e9*data.raw_t{k},squeeze(data.raw_LP{k}(x_sel,y_sel,:)));
-    xlabel('ns');title(sprintf('Raw trace:%1.2f,%1.1f',axis_info.axis2.um(x_sel),axis_info.axis3.um(y_sel)));
+    xlabel('ns');title(sprintf('Raw trace:%1.2f,%1.1f',axis_info.(ax1).um(x_sel),axis_info.(ax2).um(y_sel)));
     subplot(3,3,5:6);plot(1e9*data.t_out{k},squeeze(data.pro{k}(x_sel,y_sel,:)));
     xlabel('ns');
     subplot(3,3,8:9);plot(1e-9*data.fx{k},squeeze(data.fft{k}(x_sel,y_sel,:)));
