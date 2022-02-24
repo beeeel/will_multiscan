@@ -1,4 +1,8 @@
-function [filename, axis_info]=get_scan_details_multiscan(filename)
+function [filename, axis_info]=func_get_scan_details_multiscan(filename, live)
+
+if ~exist('live','var')
+    live = false;
+end
 
 allowed_scan_types = {'apt_stage','pi_stage','count','d2a_phidget'};        %scan action names
 % Note: Bytes per sample on a2d depends on the card. Most cards use l_sampl
@@ -280,23 +284,26 @@ for k = 1:axis_info.number_of_scans
     axis_info.(strcat('scan',num2str(k))).no_traces=filename.(strcat('scan',num2str(k))).meta.n_traces/filename.(strcat('scan',num2str(k))).meta.n_channels;
     axis_info.(strcat('scan',num2str(k))).no_channels=filename.(strcat('scan',num2str(k))).meta.n_channels;
 end
-%filesizecheck section to make sure everythign is as expected;
-for k = 1:axis_info.number_of_scans
-    %check ac files
-    fileInfo = dir(filename.(strcat('scan',num2str(k))).ac);
-    size_actual = fileInfo.bytes;
-    size_expected = prod(axis_info.(strcat('scan',num2str(k))).axis_pts)*filename.(strcat('scan',num2str(k))).meta.format*filename.(strcat('scan',num2str(k))).meta.points_per_trace*filename.(strcat('scan',num2str(k))).meta.n_channels;
-    if ~(size_actual==size_expected)
-        error('AC filesize not as expected: actual %g vs expected %g for %s',size_actual,size_expected,strcat('scan',num2str(k)));
-    end
-    %check dc files.
-    if exist('a2d', 'var')
-        for j = 1:length(filename.(strcat('scan',num2str(k))).dc)
-            fileInfo = dir(filename.(strcat('scan',num2str(k))).dc{j});
-            size_actual = fileInfo.bytes;
-            size_expected = prod(axis_info.(strcat('scan',num2str(k))).axis_pts)*filename.(strcat('scan',num2str(k))).dc_samples(j)*filename.(strcat('scan',num2str(k))).dc_bytes(j);
-            if ~(size_actual==size_expected)
-                error('DC filesize not as expected: actual %g vs expected %g for %s',size_actual,size_expected,strcat('scan',num2str(k),': dc file :',num2str(j)));
+% Not hacky as fuck, honest.
+if ~live
+    %filesizecheck section to make sure everythign is as expected;
+    for k = 1:axis_info.number_of_scans
+        %check ac files
+        fileInfo = dir(filename.(strcat('scan',num2str(k))).ac);
+        size_actual = fileInfo.bytes;
+        size_expected = prod(axis_info.(strcat('scan',num2str(k))).axis_pts)*filename.(strcat('scan',num2str(k))).meta.format*filename.(strcat('scan',num2str(k))).meta.points_per_trace*filename.(strcat('scan',num2str(k))).meta.n_channels;
+        if ~(size_actual==size_expected)
+            error('AC filesize not as expected: actual %g vs expected %g for %s',size_actual,size_expected,strcat('scan',num2str(k)));
+        end
+        %check dc files.
+        if exist('a2d', 'var')
+            for j = 1:length(filename.(strcat('scan',num2str(k))).dc)
+                fileInfo = dir(filename.(strcat('scan',num2str(k))).dc{j});
+                size_actual = fileInfo.bytes;
+                size_expected = prod(axis_info.(strcat('scan',num2str(k))).axis_pts)*filename.(strcat('scan',num2str(k))).dc_samples(j)*filename.(strcat('scan',num2str(k))).dc_bytes(j);
+                if ~(size_actual==size_expected)
+                    error('DC filesize not as expected: actual %g vs expected %g for %s',size_actual,size_expected,strcat('scan',num2str(k),': dc file :',num2str(j)));
+                end
             end
         end
     end
