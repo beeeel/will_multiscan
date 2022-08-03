@@ -125,6 +125,14 @@ else
                 tmp_data = data.(current_scan).ac{j};
                 display('No modulation depth data found so using ac data')
             end
+            % If there is only 1 trace, the size will be Npointsx1, so
+            % gotta beware of this
+            if size(tmp_data,2) == 1
+                dims = 1;
+                tmp_data = tmp_data.';
+            else
+                dims = ndims(tmp_data);
+            end
             if j==1 %for first run, work out loc and then use same for all other sets of data
                 if strcmp(exp_params.forced_co_peak,'yes');
                     loc = ones(axis_info.(current_scan).axis_pts).*exp_params.default_loc;
@@ -135,12 +143,12 @@ else
                     % mke an index varible to access the data, this is
                     % number of dimensions independant as it could be
                     % 1d,2d,3d scan...
-                    data_index = repmat({':'},1,ndims(tmp_data));
+                    data_index = repmat({':'},1,dims);
                     data_index(end)={exp_params.co_peak_range};
                     tmp = tmp_data(data_index{:});
-                    data_index2 = repmat({':'},1,ndims(tmp_data));
+                    data_index2 = repmat({':'},1,dims);
                     data_index2(end)={1};
-                    copy_size = [ones(1,ndims(tmp)-1) size(tmp,ndims(tmp))];
+                    copy_size = [ones(1,ndims(tmp)-1) size(tmp,dims)];
                     tmp2 = abs(tmp)-repmat(tmp(data_index2{:}),copy_size);
                     [a,b]=max(tmp2,[],ndims(tmp));
                     loc = b+exp_params.co_peak_range(1);
