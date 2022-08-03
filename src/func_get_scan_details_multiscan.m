@@ -251,6 +251,16 @@ end
 %section to check for .m and .dat files and ADC files for DC etc
 tmp = dir([filename.base '_*.m']);
 dctmp = dir([filename.base '_*.d']);
+if ~isfield(filename,'order_fix') || length(filename.order_fix) ~= length(tmp)
+    warning('Doing auto order_fix for scans - might not be correct!')
+    tmp2 = {tmp.name}';
+    for idx = 1:length(tmp2)
+        tmp2{idx} = tmp2{idx}(length(filename.base)+2:end);
+    end
+end
+
+
+
 for k = 1:axis_info.number_of_scans
     % Gotta apply order fix if it's available (d_scan files aren't created
     % alphabetically)
