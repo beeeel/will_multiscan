@@ -44,6 +44,10 @@ for k=1:length(data.shifted);
     
     figure(figure_handles(k));
     if data.dc_count>0
+        % At some point there's gonna be an error because this assumes axis
+        % 1 has 1 points and axis 2 has many, so I'm sorry when that
+        % happens. You should probably check how many points each axis has
+        % and decide which ones to use
         subplot(3,3,1);imagesc(axis_info.axis3.um,axis_info.axis2.um,data.dc{k});%axis image;
         a = get(gca,'position');c =colorbar('location','westoutside');set(gca,'position',a);title(c,'V')
         set(gca,'interruptible','off','BusyAction','cancel','ButtonDownFcn', {@func_plot_count_callback_multiscan,plotting_vars});                 %assign call back function when mouse clicked in figur
