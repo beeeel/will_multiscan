@@ -136,7 +136,7 @@ else  %do usual plotting for single click, no shift modifier
         y_sel=axis_info.(current_scan).axis2;
     end
     [ dx x x_sel dy y y_sel];
-    h2=get(plot_axes.axes1,'Children')
+    h2=get(plot_axes.axes1,'Children');
     set(h2(1),'Xdata',axis_info.(current_scan).axis2.um([1 end]),'Ydata',axis_info.(current_scan).axis1.um([x_sel x_sel]));
     set(h2(2),'Xdata',axis_info.(current_scan).axis2.um([y_sel y_sel]),'Ydata',axis_info.(current_scan).axis1.um([1 end]))
     h2(3).CData =squeeze(v_new(:,:,z_sel));
