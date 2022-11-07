@@ -65,8 +65,8 @@ plot_axes.figure_original = get(gcf,'position');
 %set up Ui elements
 ui.slider_label_min = uicontrol('Parent',fh,'Style','text','Position',[SliderL-Sgap,SliderB,23,23],'String',num2str(z_um(1)),'BackgroundColor',bgcolor);
 ui.slider_label_max = uicontrol('Parent',fh,'Style','text','Position',[SliderL+SliderW+Sgap,SliderB,23,23],'String',num2str(z_um(end)),'BackgroundColor',bgcolor);
-ui.slider_label = uicontrol('Parent',fh,'Style','text','Position',[SliderL+0.5*SliderW,0.5*Sgap+SliderB,30,23],'String','Z:1','BackgroundColor',bgcolor);
-ui.SliderH = uicontrol('Parent',fh,'Style','slider','Tag','slider1','Position',[SliderL,SliderB,SliderW,SliderH],'SliderStep', [(z_um(2)-z_um(1)), (z_um(2)-z_um(1))],'value',z_um(1), 'min',min(z_um), 'max',max(z_um));
+ui.slider_label = uicontrol('Parent',fh,'Style','text','Position',[SliderL+0.5*SliderW,0.5*Sgap+SliderB,60,23],'String','Z:1','BackgroundColor',bgcolor);
+ui.SliderH = uicontrol('Parent',fh,'Style','slider','Tag','slider1','Position',[SliderL,SliderB,SliderW,SliderH],'SliderStep', [(z_um(2)-z_um(1)), (z_um(2)-z_um(1))]./(max(z_um) - min(z_um)),'value',z_um(1), 'min',min(z_um), 'max',max(z_um));
 ui.SliderH.UserData = 1;
 ui.radio_plot = uicontrol('Parent',fh,'Style','radiobutton','String','Full Plots','Tag','radio1','Position',[550 75 100 30]);
 

@@ -24,13 +24,13 @@ for scan = fieldnames(data)'
                 Coeffs = cwt(x,scales,W_params.wavelet_nm);
                 
                 if rem(j,10)==0
-                    imagesc(data.(scan{:}).t_out{1},scales,abs(Coeffs))
+                    imagesc(data.(scan{:}).t_out{1},W_params.(scan{:}).Frq,abs(Coeffs))
                     drawnow;
                 end
                 
                 [a b]=max(abs(Coeffs));
                 W_data.(scan{:}).max_loc{L}(k,j,:)=b;
-                W_data.(scan{:}).tracked_lev{L}(k,j,:,:) = abs(Coeffs(W_params.track_loc,:));
+                W_data.(scan{:}).tracked_lev{L}(k,j,:,:) = abs(Coeffs(W_params.(scan{:}).track_loc,:));
             end
         end
     end

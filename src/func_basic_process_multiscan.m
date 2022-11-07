@@ -18,7 +18,7 @@ else
     
     for s = 1:axis_info.number_of_scans;
         current_scan =(strcat('scan',num2str(s)));
-        
+        disp(['Starting ' current_scan])
         
         for k = 1:axis_info.(current_scan).no_channels
             % LP filter for plotting raw signals - removes HF aliased F from traces,

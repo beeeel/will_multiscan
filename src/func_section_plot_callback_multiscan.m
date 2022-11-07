@@ -138,7 +138,7 @@ else  %do usual plotting for single click, no shift modifier
     [ dx x x_sel dy y y_sel];
     h2=get(plot_axes.axes1,'Children');
     set(h2(1),'Xdata',axis_info.(current_scan).axis2.um([1 end]),'Ydata',axis_info.(current_scan).axis1.um([x_sel x_sel]));
-    set(h2(2),'Xdata',axis_info.(current_scan).axis2.um([y_sel y_sel]),'Ydata',axis_info.(current_scan).axis1.um([1 end]))
+    set(h2(2),'Xdata',axis_info.(current_scan).axis2.um([y_sel y_sel]),'Ydata',axis_info.(current_scan).axis1.um([1 end]));
     h2(3).CData =squeeze(v_new(:,:,z_sel));
     plot_axes.axes1.CLim = [f_min f_max];
     axes(plot_axes.axes2);
@@ -176,7 +176,7 @@ if extra_plots
   h3=get(plot_axes.ax3,'Children');
   h3.XData = 1e9*data.(current_scan).raw_t{1};
   h3.YData = squeeze(data.(current_scan).raw_LP{1}(x_sel,y_sel,z_sel,:));
-plot_axes.ax3.Title.String = strcat('Raw data:','x:',num2str(x_sel),' y:',num2str(y_sel),' z:',num2str(z_sel));
+  plot_axes.ax3.Title.String = strcat('Raw data:','x:',num2str(x_sel),' y:',num2str(y_sel),' z:',num2str(z_sel));
 else %turn off un needed axes
     plot_axes.ax1.Visible='off';
     plot_axes.ax2.Visible='off';

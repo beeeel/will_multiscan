@@ -49,7 +49,7 @@ end
 if isempty(y_sel)
     y_sel=axis_info.axis2.pts;
 end
-[ x x_sel y y_sel]
+[ x x_sel y y_sel];
 
 %  figure_handles(k) = figure('position',[25+(k-1)*800 25 800 800]);
 
